@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloze Exercises 选词填空 · B1U6–B2U6</title>
+<style>
+  :root{
+    --bg:#f6f5f0; --card:#ffffff; --ink:#2b2a26; --ink2:#6b6a63; --muted:#9b9a92;
+    --line:#e5e3da; --line2:#d2cfc3;
+    --accent:#3a6ea5; --accent-bg:#eaf1f9;
+    --ok:#3b8a5f; --ok-bg:#e8f4ec; --ok-line:#bfe0cd;
+    --err:#c0392b; --err-bg:#fbecea; --err-line:#f0c6c0;
+    --chip:#fbfaf6; --shadow:0 1px 3px rgba(40,38,32,.06),0 8px 28px rgba(40,38,32,.05);
+    --radius:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1b18; --card:#26241f; --ink:#ece9e0; --ink2:#a8a59b; --muted:#807d73;
+      --line:#36342d; --line2:#46443b;
+      --accent:#7eb0e0; --accent-bg:#22303d;
+      --ok:#6cc294; --ok-bg:#1f3328; --ok-line:#2f5340;
+      --err:#e58074; --err-bg:#37231f; --err-line:#5a3029;
+      --chip:#2e2c26; --shadow:0 1px 3px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.25);
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:780px; margin:0 auto; padding:48px 24px 80px;}
+  header{margin-bottom:28px;}
+  .eyebrow{font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 8px;}
+  h1{font-size:30px; font-weight:650; margin:0 0 6px; letter-spacing:-.01em;}
+  .sub{color:var(--ink2); font-size:15px; margin:0;}
+
+  .toolbar{
+    display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:12px 14px; box-shadow:var(--shadow); margin:24px 0 18px; position:sticky; top:12px; z-index:5;
+    backdrop-filter:saturate(1.2);
+  }
+  select{
+    appearance:none; background:var(--chip); border:1px solid var(--line2); color:var(--ink);
+    font:inherit; font-size:14px; font-weight:600; padding:8px 34px 8px 14px; border-radius:10px; cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239b9a92' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 12px center;
+  }
+  select:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-bg);}
+  button{
+    font:inherit; font-size:14px; font-weight:600; color:var(--ink);
+    background:var(--chip); border:1px solid var(--line2); border-radius:10px;
+    padding:8px 14px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;
+    transition:transform .08s ease, background .15s ease, border-color .15s ease;
+  }
+  button:hover{background:var(--card); border-color:var(--ink2);}
+  button:active{transform:scale(.96);}
+  button.primary{background:var(--accent); border-color:var(--accent); color:#fff;}
+  button.primary:hover{filter:brightness(1.06);}
+  button svg{width:16px; height:16px;}
+  .score{margin-left:auto; font-size:14px; font-weight:600; color:var(--ink2); white-space:nowrap;}
+  .score.good{color:var(--ok);} .score.bad{color:var(--err);}
+
+  .bank{
+    display:flex; flex-wrap:wrap; gap:9px; padding:16px;
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); margin-bottom:8px; min-height:56px;
+  }
+  .bank-label{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:2px 0 -2px; font-weight:600;}
+  .chip{
+    display:inline-block; padding:7px 15px; background:var(--chip);
+    border:1px solid var(--line2); border-radius:20px; font-size:14.5px; font-weight:500;
+    cursor:grab; user-select:none; transition:all .14s ease;
+  }
+  .chip:hover{border-color:var(--accent); color:var(--accent); transform:translateY(-1px);}
+  .chip:active{cursor:grabbing;}
+  .chip.used{opacity:.28; pointer-events:none; transform:none;}
+
+  .passage{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:28px 30px; margin-top:20px;
+    font-size:17px; line-height:2.5; letter-spacing:.005em;
+  }
+  .slot{
+    display:inline-block; min-width:96px; padding:1px 10px 2px; margin:0 3px;
+    border-bottom:2px solid var(--line2); text-align:center; cursor:pointer;
+    vertical-align:baseline; min-height:26px; border-radius:5px 5px 0 0;
+    transition:all .15s ease; font-weight:600;
+  }
+  .slot:hover{background:var(--accent-bg);}
+  .slot.filled{color:var(--accent); border-bottom-color:var(--accent);}
+  .slot.ok{color:var(--ok); border-bottom-color:var(--ok); background:var(--ok-bg);}
+  .slot.err{color:var(--err); border-bottom-color:var(--err); background:var(--err-bg);}
+  .slot.drag{background:var(--accent-bg); border-bottom-color:var(--accent);}
+  .slot sup{color:var(--muted); font-size:11px; margin-right:3px; font-weight:600;}
+
+  .hint{margin-top:22px; font-size:13.5px; color:var(--muted); text-align:center;}
+  footer{margin-top:40px; text-align:center; font-size:13px; color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Cloze Exercises · 练习版</p>
+    <h1>选词填空 B1U6–B2U6</h1>
+    <p class="sub">每个单元含正确词 + 5 个干扰词，点击或拖拽填入空格</p>
+  </header>
+
+  <div class="toolbar">
+    <select id="unitSel" aria-label="选择单元"></select>
+    <button class="primary" id="checkBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>检查
+    </button>
+    <button id="resetBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 109-9 9 9 0 00-6.3 2.6L3 8"/><path d="M3 3v5h5"/></svg>重置
+    </button>
+    <button id="ansBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>显示答案
+    </button>
+    <span class="score" id="score"></span>
+  </div>
+
+  <p class="bank-label">词库 Word Bank</p>
+  <div class="bank" id="bank"></div>
+
+  <div class="passage" id="passage"></div>
+
+  <p class="hint">点击词块填入第一个空 · 拖拽可指定空格 · 点击已填空格可清除</p>
+  <footer>Cloze Exercises Review · B1U6–B2U6</footer>
+</div>
+
+<script>
+const DATA = {
+  "B1U6": {
+    answers: ["Imagination","If anything","credit","foundation","inspiration","remarkable leaps","mess","outbreak","strained","puzzles"],
+    distractors: ["fantasy","decline","fragile","attribute","obstacle"],
+    parts: [
+      "Don't get confused. ", 0, " is not dreaming. ", 1, ", imagination is being creative. We may very well ", 2,
+      " to it all the inventions and innovations. Without imagination, I bet we would still be cavemen. Knowledge is important but imagination is even more crucial. Knowledge serves as the ", 3,
+      " for imagination. Backed by knowledge accumulated in the past, gifted with ", 4, " and working determinedly, talented scientists are able to make ", 5,
+      " in their research. Imagination is much needed in cleaning up the ", 6, " mankind has created with global warming, as well as in dealing with such problems as the frequent ", 7,
+      " of deadly diseases, and the ", 8, " relationship between the rich and the poor. Imagination is also a must in solving the many ", 9,
+      " in this universe, such as whether there is intelligent life other than us humans."
+    ]
+  },
+  "B2U1": {
+    answers: ["has been narrowed down","proof","dreaded","glorious","embarrassed","humiliated","typical","communities","locations","interference","somewhat","welfare"],
+    distractors: ["widened","evidence","cherished","reluctant","isolated"],
+    parts: [
+      "American psychologist Bella DePaulo believes that the generation gap in the US ", 0, ". As ", 1,
+      " she cites a 2013 survey of parents of 18\u201329-year-olds, of which about three-quarters said their relationship with their children was mostly positive. In the past, adult children ", 2,
+      " dependence on their parents. They moved away from their parents' home as soon as they reached adulthood to seek ", 3,
+      " independence, but now some adult children don't feel ", 4, ", or ", 5,
+      ", to admit that they are still living with their parents. In the past, the ", 6, " parent did not speak frequently with their grown children living in separate ", 7,
+      " or ", 8, ", let alone give them advice, because this might be seen as ", 9,
+      ". Cellphones, the Internet, and social media in general are ", 10, " behind-the-scene \u201Cheroes\u201D, bridging the gap between two generations, keeping them informed of and interested in each other's ", 11, "."
+    ]
+  },
+  "B2U2": {
+    answers: ["fantasy","confronting","scared","on the other hand","numerous","determination","dedication","highlights"],
+    distractors: ["masterpiece","avoiding","thrilled","in addition","scarce"],
+    parts: [
+      "In 1883, John Roebling got an inspiration to build a bridge across the East River. However, bridge building experts thought it was only a(n) ", 0,
+      " and told him to forget about it. The two of them discussed how to overcome the obstacles ", 1,
+      " them. The project was only a few months under way when an on-site accident killed John Roebling and left his son Washington seriously injured. Everyone was ", 2,
+      " and believed that the project would have to be stopped. Washington was unable to move or talk. But ", 3,
+      ", his mind was as sharp as ever. For 13 years, Washington tapped out his orders with one finger, overcoming ", 4,
+      " obstacles. Because of his ", 5, " and ", 6,
+      ", the spectacular Brooklyn Bridge was finally completed. To this day the Brooklyn Bridge has remained one of the ", 7, " of New York City."
+    ]
+  },
+  "B2U3": {
+    answers: ["amazed","for a moment","favorite","wander","scanning","by myself","assignments","Now and then","pace","anticipating"],
+    distractors: ["bored","at once","familiar","rush","ignoring"],
+    parts: [
+      "The first time I got inside a library, I was just ", 0, " by what I saw. There were so many books that, ", 1,
+      ", I could scarcely believe my eyes. Ever since then, the library has become my ", 2, " place to go. I used to ", 3,
+      " around the shelves, ", 4, " the book titles, or read for hours ", 5, ". I even took my textbooks with me and worked on my school ", 6,
+      " there. ", 7, ", I would see somebody I knew, and we would share with each other what we had found. On my way back home, I would keep my mind busy thinking about how to ", 8,
+      " myself through the grace period. What a thrill it was ", 9, " reading the new books I had borrowed!"
+    ]
+  },
+  "B2U4": {
+    answers: ["exceed","take entire cities and countries by storm","and so forth","definitely","frustration","subjected to","route","incredibly"],
+    distractors: ["restrict","etc. only","barely","calmness","path of"],
+    parts: [
+      "Regardless of religion, ethnicity, or skin color, soccer brings people together in ways that ", 0, " your wildest dreams. It can ", 1,
+      " for one single game. Kids in Africa who can't get a real ball make soccer balls out of tied-up plastic bags, banana leaves, strips of cloth ", 2,
+      ". Soccer is easy to learn and is ", 3, " a safer sport to play than football. Players must keep ", 4,
+      " in check. These events give cultures ", 5, " profound differences something to bond over. Being able to plot a ", 6,
+      " from one end of the field to the other \u2014 it is ", 7, " exciting watching players do all this for 90 minutes."
+    ]
+  },
+  "B2U5": {
+    answers: ["cooperate","assess","encountering","deceive","reveals","at first","explored","figured out","in the interests of","survive"],
+    distractors: ["compete","ignore","fleeing","obey","conceals"],
+    parts: [
+      "How do animals ", 0, " to get food or take care of their young? How do they ", 1, " an environment and keep themselves out of danger? How do they act when ", 2,
+      " enemies? Do they try to ", 3, " the latter? Much of animal behavior is innate. However, research ", 4,
+      " that animals learn much other behavior. For example, young horses are ", 5, " afraid of noisy streets. In 1900, Ivan Pavlov ", 6,
+      " conditioning in dogs. Pavlov ", 7, " that if he rang a bell every time he gave food to a dog it would eventually salivate at the bell alone. Most learning is ", 8,
+      " animals. It enables them to better ", 9, "."
+    ]
+  },
+  "B2U6": {
+    answers: ["fascinating","tolerance","invented","ban","corrupt","out of control","intellectual elite","came up with","establishing","preserve","sources"],
+    distractors: ["tedious","rejection","borrowed only","approve","under control"],
+    parts: [
+      "A(n) ", 0, " feature of the English language is its ", 1, " of new words and phrases, either borrowed or ", 2,
+      ". There exists no authority to determine what is acceptable and to ", 3, " what is not. Some people do think that borrowed words ", 4,
+      " the language. They think the language is running ", 5, ". Influenced by the ", 6, " in France, some people in Britain ", 7,
+      " the idea of ", 8, " an academy to ", 9, " the purity of the English language. Massive borrowing from a rich variety of ", 10, " greatly enriched the language."
+    ]
+  }
+};
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function norm(s){return s.trim().toLowerCase().replace(/\u201c|\u201d/g,'"');}
+
+const unitSel=document.getElementById('unitSel');
+Object.keys(DATA).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=k;unitSel.appendChild(o);});
+
+let cur, slots;
+
+function render(){
+  cur=DATA[unitSel.value];
+  const bank=document.getElementById('bank'); bank.innerHTML='';
+  shuffle(cur.answers.concat(cur.distractors)).forEach(w=>{
+    const chip=document.createElement('span');
+    chip.textContent=w; chip.className='chip'; chip.draggable=true; chip.dataset.word=w;
+    chip.onclick=()=>placeWord(w,chip);
+    chip.ondragstart=e=>e.dataTransfer.setData('text/plain',w);
+    bank.appendChild(chip);
+  });
+  const p=document.getElementById('passage'); p.innerHTML=''; slots=[];
+  cur.parts.forEach(part=>{
+    if(typeof part==='string'){ p.appendChild(document.createTextNode(part)); }
+    else {
+      const idx=part;
+      const slot=document.createElement('span');
+      slot.className='slot'; slot.dataset.idx=idx;
+      const num=document.createElement('sup'); num.textContent=(idx+1);
+      slot.appendChild(num);
+      const content=document.createElement('span'); content.className='slotc';
+      slot.appendChild(content);
+      slot.onclick=()=>clearSlot(slot);
+      slot.ondragover=e=>{e.preventDefault();slot.classList.add('drag');};
+      slot.ondragleave=()=>slot.classList.remove('drag');
+      slot.ondrop=e=>{e.preventDefault();slot.classList.remove('drag');const w=e.dataTransfer.getData('text/plain');const chip=document.querySelector('.chip[data-word="'+CSS.escape(w)+'"]:not(.used)');if(chip)placeWordToSlot(w,chip,slot);};
+      p.appendChild(slot); slots.push(slot);
+    }
+  });
+  const sc=document.getElementById('score'); sc.textContent=''; sc.className='score';
+}
+
+function firstEmptySlot(){return slots.find(s=>!s.dataset.filled);}
+function placeWord(w,chip){const slot=firstEmptySlot();if(slot)placeWordToSlot(w,chip,slot);}
+function placeWordToSlot(w,chip,slot){
+  if(slot.dataset.filled){const old=slot.dataset.filled;const oc=document.querySelector('.chip.used[data-word="'+CSS.escape(old)+'"]');if(oc)oc.classList.remove('used');}
+  slot.dataset.filled=w;
+  slot.querySelector('.slotc').textContent=w;
+  slot.className='slot filled';
+  chip.classList.add('used');
+}
+function clearSlot(slot){
+  const w=slot.dataset.filled; if(!w)return;
+  delete slot.dataset.filled;
+  slot.querySelector('.slotc').textContent='';
+  slot.className='slot';
+  const chip=document.querySelector('.chip.used[data-word="'+CSS.escape(w)+'"]');
+  if(chip)chip.classList.remove('used');
+}
+function check(){
+  let correct=0;
+  slots.forEach(slot=>{
+    const idx=+slot.dataset.idx, filled=slot.dataset.filled||'';
+    slot.className='slot'+(slot.dataset.filled?' filled':'');
+    if(norm(filled)===norm(cur.answers[idx])){correct++;slot.className='slot ok';}
+    else if(filled){slot.className='slot err';}
+  });
+  const sc=document.getElementById('score');
+  sc.textContent='得分 '+correct+' / '+cur.answers.length;
+  sc.className='score '+(correct===cur.answers.length?'good':'bad');
+}
+function showAnswers(){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.add('used'));
+  slots.forEach(slot=>{
+    const idx=+slot.dataset.idx;
+    slot.dataset.filled=cur.answers[idx];
+    slot.querySelector('.slotc').textContent=cur.answers[idx];
+    slot.className='slot ok';
+  });
+  const sc=document.getElementById('score'); sc.textContent='已显示答案'; sc.className='score good';
+}
+
+unitSel.onchange=render;
+document.getElementById('checkBtn').onclick=check;
+document.getElementById('resetBtn').onclick=render;
+document.getElementById('ansBtn').onclick=showAnswers;
+render();
+</script>
+</body>
+</html>
